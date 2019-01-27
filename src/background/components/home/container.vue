@@ -1,6 +1,6 @@
 <template>
   <div class="view-container" ref="container">
-    <component :is="component" :config="config" :data="data" @method="methodHandle"/>
+    <page :page="nowPage"></page>
     <div class="eee"></div>
   </div>
 </template>
@@ -9,13 +9,16 @@
   import ToTop from '../common/to-top'
   import { pageCenter } from './page-center/page-center'
   import Vue from "vue"
+  import Page from './Page.vue'
 
   export default {
     name: 'Container',
-    components: pageCenter.getComponent('pages', {
-    }),
+    components: {
+      Page
+    },
     data() {
       return {
+        nowPage: ToTop,
         component: 'Error404',
         page: {},
         data: {},
