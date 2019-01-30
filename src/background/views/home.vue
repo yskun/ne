@@ -36,6 +36,7 @@
       avatar: ''
     }
     menu = []
+
     now = {
       route: '',
       menu: pageCenter.nowPageList

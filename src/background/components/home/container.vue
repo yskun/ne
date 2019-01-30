@@ -1,97 +1,120 @@
 <template>
   <div class="view-container" ref="container">
     <page :page="nowPage"></page>
-    <div class="eee"></div>
   </div>
 </template>
 
-<script>
-  import ToTop from '../common/to-top'
-  import { pageCenter } from './page-center/page-center'
-  import Vue from "vue"
-  import Page from './Page.vue'
+<script lang="ts">
+  import Dashboard from '../pages/dashboard/dashboard.page.vue'
+  import Error404 from '../pages/Error404/error404.page.vue'
+  import Page from './page/Page.vue'
+  import { Vue, Component } from 'vue-property-decorator'
+  import * as uuid from 'uuid/v1'
 
-  export default {
+  @Component({
     name: 'Container',
     components: {
       Page
-    },
-    data() {
-      return {
-        nowPage: ToTop,
-        component: 'Error404',
-        page: {},
-        data: {},
-        config: {},
-        container: {}
+    }
+  })
+  export default class Container extends Vue {
+    nowPage: any = ''
+    pageMap: Map<string, { id: string, ins: any, page: any }> = new Map()
+    testPage: string[] = []
+    page = {}
+    data = {}
+    config = {}
+    container = {}
+
+    createPage(page: any, mounted: boolean = true) {
+      let ins = this.initPage(page)
+      let id: string = uuid()
+      let result = {
+        id, ins, page
       }
-    },
-    watch: {
-      '$store.state.page'() {
-        this.mountPage()
+      this.pageMap.set(id, result)
+      if (mounted) {
+        this.nowPage = ins
       }
-    },
-    methods: {
-      methodHandle(content) {
-        if (!(content && content.type)) {
+      return result
+    }
+
+    removePage(id: string, switchWhenOnMounted: boolean = true) {
+      if (!this.pageMap.has(id)) {
+        return
+      }
+
+      let result = this.pageMap.get(id)
+      if (result.ins === this.nowPage.ins) {
+        if (!switchWhenOnMounted) {
           return
         }
+        if (this.pageMap.size > 1) {
 
-        if (content.type === 'modal') {
-          this.$store.commit('showModal', {
-            data: content.data || null,
-            component: content.component,
-            $config: this.config
-          })
         }
-      },
-      mountPage() {
-        let page = this.$store.state.page
-        if (page && page.name) {
-          this.page = page
-          // todo 此处会导致切换页面时出现性能问题，有待解决，若不先清空当前页，可能会导致某些状态不能被刷新
-          // update 1 目前此处通过判断目标是否一致选择是否先清空状态
-          if (this.component === page.pages[0]) {
-            this.component = ''
-          } else {
-            this.component = page.pages[0]
-          }
-          this.$set(this, 'data', page.store)
-          this.config = page.config || {}
-        } else {
-          this.component = 'Error404'
-        }
-        this.$nextTick(function() {
-          if (page && page.pages) {
-            this.component = page.pages[0]
-            this.$nextTick(function() {
-              this.container.scrollTop = this.page.viewTopScroll
-            })
-          }
-        })
-      },
-      viewWatcher() {
-        this.page.viewTopScroll = this.container.scrollTop
-      },
-      bindViewScrollWatcher() {
-        this.container = this.$refs.container
-        this.container.addEventListener('scroll', this.viewWatcher, false)
-      },
-      removeViewScrollWatcher() {
-        this.container.removeEventListener('scroll', this.viewWatcher, false)
       }
-    },
-    mounted() {
-      (new Vue({
-        render: h => h(ToTop)
-      })).$mount('.eee')
-      // this.mountPage()
-      // this.bindViewScrollWatcher()
-    },
-    destroyed() {
-      this.removeViewScrollWatcher()
     }
+
+    switchPage(id: string) {
+      if (!this.pageMap.has(id)) {
+        throw new Error('no page instance on pageMap, please make sure the id:' + id + 'is a real id')
+      }
+      let result = this.pageMap.get(id)
+      this.nowPage = result.ins
+    }
+
+    private initPage(page): Vue {
+      let Page = Vue.extend(page)
+      return new Page({
+        el: document.createElement('div')
+      })
+    }
+
+    mounted() {
+      this.testPage.push(
+        this.createPage(Dashboard).id,
+        this.createPage(Error404, false).id
+      )
+      window['switchPage'] = (num: number) => {
+        this.switchPage(this.testPage[num])
+      }
+    }
+
   }
+
+  // export default {
+  //   methods: {
+  //     methodHandle(content) {
+  //       if (!(content && content.type)) {
+  //         return
+  //       }
+  //
+  //       if (content.type === 'modal') {
+  //         this.$store.commit('showModal', {
+  //           data: content.data || null,
+  //           component: content.component,
+  //           $config: this.config
+  //         })
+  //       }
+  //     },
+  //     viewWatcher() {
+  //       this.page.viewTopScroll = this.container.scrollTop
+  //     },
+  //     bindViewScrollWatcher() {
+  //       this.container = this.$refs.container
+  //       this.container.addEventListener('scroll', this.viewWatcher, false)
+  //     },
+  //     removeViewScrollWatcher() {
+  //       this.container.removeEventListener('scroll', this.viewWatcher, false)
+  //     }
+  //   },
+  //   mounted() {
+  //     // this.bindViewScrollWatcher()
+  //   },
+  //   destroyed() {
+  //     this.removeViewScrollWatcher()
+  //   }
+  // }
 </script>
 
 <style lang="less" scoped>

@@ -1,10 +1,14 @@
 import vue from 'vue'
 import vuex from 'vuex'
 import { pageCenter } from './components/home/page-center/page-center'
+import { container } from '@/background/components/home/container.store'
 
 vue.use(vuex)
 
 export const Store = new vuex.Store({
+  modules: {
+    container
+  },
   state: {
     component: {},
     page: {},
@@ -14,7 +18,7 @@ export const Store = new vuex.Store({
   mutations: {
     changePageByType(state, key) {
       let page = pageCenter.mount(key)
-      if(!page){
+      if (!page) {
         state.page = ''
         return
       }
@@ -43,7 +47,7 @@ export const Store = new vuex.Store({
       modal.$id = new Date().getTime()
       state.modals.push(modal)
     },
-    changeMenuCollapsed(state){
+    changeMenuCollapsed(state) {
       state.menuCollapsed = !state.menuCollapsed
     }
   }
