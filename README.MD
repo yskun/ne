@@ -117,7 +117,7 @@ export default {
 |logo|否|string|页面的图标，目前仅支持iview3原生图标|无|
 |pages|是|array|页面的包含的组件，当仅有一个组件时，不显示子页面切换器|无|
 |modals|否|array|页面包含的模态框|无|
-|store|否|object \| function|存储单元，store内的内容在切换页面后不被消除|{}|
+|store|否|object \ function|存储单元，store内的内容在切换页面后不被消除|{}|
 |noToTop|否|boolean|不显示返回页顶的按钮|false|
 |multiplePage|否|boolean|允许多例页面|false|
 |closeable|否|boolean|是否能关闭该页面|false|

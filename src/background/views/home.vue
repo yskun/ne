@@ -35,6 +35,7 @@
       nickname: '',
       avatar: ''
     }
+
     menu = []
 
     now = {
@@ -42,25 +43,8 @@
       menu: pageCenter.nowPageList
     }
 
-    getMenu(source) {
-      return source.map(m => {
-        let p = pageCenter.pages.find(p => m.page === p.type)
-        if (p) {
-          m.name = m.name || p.name || ''
-          m.icon = m.icon || p.icon
-        } else {
-          m.page = m.page || ''
-        }
-        if (m.children) {
-          m.children = this.getMenu(m.children)
-        }
-        return m
-      })
-    }
-
-    mounted() {
-      this.menu = this.getMenu(menuList)
-      console.log(this.menu)
+    created() {
+      this.$store.commit('setMenu', )
       let instances = pageCenter.mountDefaultPage()
       if (instances.length > 0) {
         this.$store.commit('changePageById', instances[0].ins[0].$id)

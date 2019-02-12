@@ -19,7 +19,7 @@
     props: {
       menu: Array,
       title: {
-        default: 'Ne. 开发中心终端'
+        default: 'Ne. 读书郎终端'
       },
       collapseTitle: {
         default: 'Ne.'
