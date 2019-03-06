@@ -2,18 +2,18 @@
   <div ref="scrollCon" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll" class="tags-outer-scroll-con">
     <div ref="scrollBody" class="tags-inner-scroll-body" :style="{left: tagBodyLeft + 'px'}">
       <!--<transition-group name="taglist-moving-animation">-->
-        <a-tag
-          v-for="item in pageTagsList"
-          v-if="!item.noTab"
-          ref="tagsPageOpened"
-          :key="item.$id"
-          :itemid="item.$id"
-          @close="closePage(item)"
-          @click.native="linkTo(item)"
-          :closable="item.closeable !== false"
-          :color="item.$id===currentPageId?'cyan-inverse':''"
-        >{{ item.name | tagName(item) }}
-        </a-tag>
+        <!--<a-tag-->
+          <!--v-for="item in pageTagsList"-->
+          <!--v-if="!item.noTab"-->
+          <!--ref="tagsPageOpened"-->
+          <!--:key="item.$id"-->
+          <!--:itemid="item.$id"-->
+          <!--@close="closePage(item)"-->
+          <!--@click.native="linkTo(item)"-->
+          <!--:closable="item.closeable !== false"-->
+          <!--:color="item.$id===currentPageId?'cyan-inverse':''"-->
+        <!--&gt;{{ item.name | tagName(item) }}-->
+        <!--</a-tag>-->
       <!--</transition-group>-->
     </div>
   </div>
@@ -128,17 +128,17 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.refsTag = this.$refs.tagsPageOpened
-      this.refsTag.forEach((item, index) => {
-        if (this.$store.state.page.$id === item.$attrs.itemid) {
-          let tag = this.refsTag[index].$el
-          this.moveToView(tag)
-        }
-      })
-    })
-    this.tagsCount = this.pageTagsList.length
-    this.currentPageId = this.$store.state.page.$id || 0
+    // setTimeout(() => {
+    //   this.refsTag = this.$refs.tagsPageOpened
+    //   this.refsTag.forEach((item, index) => {
+    //     if (this.$store.state.page.$id === item.$attrs.itemid) {
+    //       let tag = this.refsTag[index].$el
+    //       this.moveToView(tag)
+    //     }
+    //   })
+    // })
+    // this.tagsCount = this.pageTagsList.length
+    // this.currentPageId = this.$store.state.page.$id || 0
   },
   watch: {
     '$store.state.page'(page) {

@@ -30,19 +30,20 @@
     }
 
     async mounted() {
-      if (this.page && this.page.$el) {
-        await this.loadPage()
-      }
+      // if (this.page && this.page.$el) {
+      //   await this.loadPage()
+      // }
+      console.log(this)
     }
 
     private async loadPage() {
-      this.$el.innerHTML = ''
-      this.$children.pop()
-      if (this.page && this.page.$el) {
-        this.$el.append(this.page.$el)
-        this.$children.push(this.page)
-        await this.runActivated(this.page)
-      }
+      // this.$el.innerHTML = ''
+      // this.$children.pop()
+      // if (this.page && this.page.$el) {
+      //   this.$el.append(this.page.$el)
+      //   this.$children.push(this.page)
+      //   await this.runActivated(this.page)
+      // }
     }
 
     private async runActivated(ins: Vue) {

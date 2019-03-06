@@ -1,6 +1,8 @@
 <template>
   <div class="view-container" ref="container">
-    <page :page="nowPage"></page>
+    <page :page="nowPage">
+      <div></div>
+    </page>
   </div>
 </template>
 
