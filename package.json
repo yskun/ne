@@ -12,10 +12,10 @@
     "lodash.omit": "^4.5.0",
     "uuid": "^3.3.2",
     "vue": "^2.5.22",
-    "vue-router": "^3.0.2",
-    "vuex": "^3.1.0",
     "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.0.0"
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.3.0",

@@ -1,31 +1,36 @@
 import vue from 'vue'
 import vuex from 'vuex'
 import { pageCenter } from './components/home/page-center/page-center'
+import { page } from '@/background/page/page.store'
+import { menu } from '@/background/menu/menu.store'
 
 vue.use(vuex)
 
 export const Store = new vuex.Store({
+  modules: {
+    page,
+    menu
+  },
   state: {
     component: {},
-    page: {},
     modals: [],
     menuCollapsed: false
   },
   mutations: {
     changePageByType(state, key) {
       let page = pageCenter.mount(key)
-      if(!page){
-        state.page = ''
+      if (!page) {
+        // state.page = ''
         return
       }
-      state.page = page.ins[0]
+      // state.page = page.ins[0]
     },
     changePageById(state, key) {
       let page = pageCenter.getPageById(key)
       if (page) {
-        state.page = page
+        // state.page = page
       } else {
-        state.page = ''
+        // state.page = ''
       }
     },
     changeComponent(state, target) {
@@ -43,7 +48,7 @@ export const Store = new vuex.Store({
       modal.$id = new Date().getTime()
       state.modals.push(modal)
     },
-    changeMenuCollapsed(state){
+    changeMenuCollapsed(state) {
       state.menuCollapsed = !state.menuCollapsed
     }
   }

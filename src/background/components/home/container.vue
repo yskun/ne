@@ -1,90 +1,77 @@
 <template>
   <div class="view-container" ref="container">
-    <component :is="component" :config="config" :data="data" @method="methodHandle"/>
-    <div class="eee"></div>
+    <page :page="nowPage">
+      <div></div>
+    </page>
   </div>
 </template>
 
-<script>
-  import ToTop from '../common/to-top'
-  import { pageCenter } from './page-center/page-center'
-  import Vue from "vue"
+<script lang="ts">
+  let Dashboard = () => import('../pages/dashboard/dashboard.page.vue')
+  import Error404 from '../pages/Error404/error404.page.vue'
+  import Page from './page/Page.vue'
+  import { Vue, Component } from 'vue-property-decorator'
+  import { IPageOptions } from '@/background/page/page.interface'
 
-  export default {
+  @Component({
     name: 'Container',
-    components: pageCenter.getComponent('pages', {
-    }),
-    data() {
-      return {
-        component: 'Error404',
-        page: {},
-        data: {},
-        config: {},
-        container: {}
-      }
-    },
-    watch: {
-      '$store.state.page'() {
-        this.mountPage()
-      }
-    },
-    methods: {
-      methodHandle(content) {
-        if (!(content && content.type)) {
-          return
-        }
+    components: {
+      Page
+    }
+  })
+  export default class Container extends Vue {
+    testPage: string[] = []
+    container: Element
 
-        if (content.type === 'modal') {
-          this.$store.commit('showModal', {
-            data: content.data || null,
-            component: content.component,
-            $config: this.config
-          })
-        }
-      },
-      mountPage() {
-        let page = this.$store.state.page
-        if (page && page.name) {
-          this.page = page
-          // todo 此处会导致切换页面时出现性能问题，有待解决，若不先清空当前页，可能会导致某些状态不能被刷新
-          // update 1 目前此处通过判断目标是否一致选择是否先清空状态
-          if (this.component === page.pages[0]) {
-            this.component = ''
-          } else {
-            this.component = page.pages[0]
-          }
-          this.$set(this, 'data', page.store)
-          this.config = page.config || {}
-        } else {
-          this.component = 'Error404'
-        }
-        this.$nextTick(function() {
-          if (page && page.pages) {
-            this.component = page.pages[0]
-            this.$nextTick(function() {
-              this.container.scrollTop = this.page.viewTopScroll
-            })
-          }
-        })
-      },
-      viewWatcher() {
-        this.page.viewTopScroll = this.container.scrollTop
-      },
-      bindViewScrollWatcher() {
-        this.container = this.$refs.container
-        this.container.addEventListener('scroll', this.viewWatcher, false)
-      },
-      removeViewScrollWatcher() {
-        this.container.removeEventListener('scroll', this.viewWatcher, false)
+    get nowPage() {
+      return this.$store.state.page.nowPage.ins
+    }
+
+    get pageOptions(): IPageOptions {
+      if (!this.nowPage) {
+        return {}
       }
-    },
-    mounted() {
-      (new Vue({
-        render: h => h(ToTop)
-      })).$mount('.eee')
-      // this.mountPage()
-      // this.bindViewScrollWatcher()
-    },
+
+      return this.nowPage.$options.page || {}
+    }
+
+    switchPage(id: string) {
+      this.$store.dispatch('switchPage', { id: id })
+    }
+
+    async createPage(page, mounted = true) {
+      console.log(this.$store)
+      return await this.$store.dispatch('createPage', { page, mounted }).then(value => {
+        console.log(`createPageResult`, value)
+        return value
+      })
+    }
+
+    viewWatcher() {
+      this.pageOptions.viewTopScroll = this.container.scrollTop
+    }
+
+    bindViewScrollWatcher() {
+      this.container = <Element>this.$refs.container
+      this.container.addEventListener('scroll', this.viewWatcher, false)
+    }
+
+    removeViewScrollWatcher() {
+      this.container.removeEventListener('scroll', this.viewWatcher, false)
+    }
+
+
+    async mounted() {
+      this.testPage.push(
+        (await this.createPage(Dashboard)).id,
+        (await this.createPage(Error404, false)).id
+      )
+      window['switchPage'] = (num: number) => {
+        this.switchPage(this.testPage[num])
+      }
+      this.bindViewScrollWatcher()
+    }
+
     destroyed() {
       this.removeViewScrollWatcher()
     }

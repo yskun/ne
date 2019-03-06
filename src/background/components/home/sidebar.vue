@@ -19,7 +19,7 @@
     props: {
       menu: Array,
       title: {
-        default: 'Ne. 开发中心终端'
+        default: 'Ne. 中台管理系统'
       },
       collapseTitle: {
         default: 'Ne.'
