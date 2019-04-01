@@ -1,17 +1,18 @@
 <template>
   <div class="view-container" ref="container">
-    <page :page="nowPage">
-      <div></div>
+    <page ref="page">
     </page>
   </div>
 </template>
 
 <script lang="ts">
+  import { IPage } from '@/background/components/home/page/IPage'
+
   let Dashboard = () => import('../pages/dashboard/dashboard.page.vue')
   import Error404 from '../pages/Error404/error404.page.vue'
   import Page from './page/Page.vue'
-  import { Vue, Component } from 'vue-property-decorator'
-  import { IPageOptions } from '@/background/page/page.interface'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
+  import { IPageDirective, IPageOptions } from '@/background/page/page.interface'
 
   @Component({
     name: 'Container',
@@ -20,35 +21,69 @@
     }
   })
   export default class Container extends Vue {
-    testPage: string[] = []
+
     container: Element
+    pageComponent: IPage
+    singleInstance: { page: any, key: string }[] = []
+    nowInstanceList: { page: any, ins: any, key: string, option: IPageOptions }[] = []
 
     get nowPage() {
       return this.$store.state.page.nowPage.ins
     }
 
-    get pageOptions(): IPageOptions {
-      if (!this.nowPage) {
-        return {}
+    get directive(): IPageDirective {
+      return this.$store.state.page.nowDirective
+    }
+
+    @Watch('directive')
+    directiveWatcher(directive: IPageDirective) {
+      if (directive.method === '') {
+        return
       }
 
-      return this.nowPage.$options.page || {}
+      if (!this[directive.method]) {
+        throw new Error(`no '${directive.method}' method on container`)
+      }
+
+      this[directive.method](directive)
     }
 
-    switchPage(id: string) {
-      this.$store.dispatch('switchPage', { id: id })
+    async create(directive: IPageDirective) {
+      if (!directive.page) {
+        throw new Error('create method need page option')
+      }
+
+      const pageOption: IPageOptions = directive.page
+
+      // 如果不允许多例则终结创建过程
+      if (pageOption.multiplePage === false) {
+        const result = this.singleInstance.findIndex(instance => instance.page === (<IPageOptions>directive.page).page)
+        if (result > -1) {
+          return
+        }
+      }
+
+      const key = await this.pageComponent.create(pageOption.page)
+      if (key) {
+        const ins = this.pageComponent.getInstance(key)
+        this.nowInstanceList.push({
+          ins,
+          key,
+          page: pageOption.page,
+          option: pageOption
+        })
+        if (pageOption.multiplePage === false) {
+          this.singleInstance.push({ page: pageOption.page, key })
+        }
+      }
     }
 
-    async createPage(page, mounted = true) {
-      console.log(this.$store)
-      return await this.$store.dispatch('createPage', { page, mounted }).then(value => {
-        console.log(`createPageResult`, value)
-        return value
-      })
+    switch(directive: IPageOptions) {
+
     }
 
     viewWatcher() {
-      this.pageOptions.viewTopScroll = this.container.scrollTop
+      // this.pageOptions.viewTopScroll = this.container.scrollTop
     }
 
     bindViewScrollWatcher() {
@@ -62,13 +97,10 @@
 
 
     async mounted() {
-      this.testPage.push(
-        (await this.createPage(Dashboard)).id,
-        (await this.createPage(Error404, false)).id
-      )
-      window['switchPage'] = (num: number) => {
-        this.switchPage(this.testPage[num])
-      }
+      this.pageComponent = <any>this.$refs.page
+      const key = await this.pageComponent.create(Error404)
+      console.log(key)
+      console.log(await this.pageComponent.remove(key))
       this.bindViewScrollWatcher()
     }
 

@@ -7,11 +7,7 @@
 <script lang="ts">
 
   import { Vue, Component } from 'vue-property-decorator'
-  import { Page } from '@/background/page/page.decoration'
 
-  @Page({
-    type: 'dashboard'
-  })
   @Component({
     name: 'Dashboard'
   })

@@ -2,14 +2,33 @@ import { Module } from 'vuex/types'
 import { Vue } from 'vue-property-decorator'
 import * as uuid from 'uuid/v1'
 import { getPageOptions, initPage } from '@/background/page/page.util'
-import { IPageIns, IPageStore } from '@/background/page/page.interface'
+import { IPageDirective, IPageIns, IPageResult, IPageStore } from '@/background/page/page.interface'
 
 export const page: Module<IPageStore, any> = {
   state: {
+    nowDirective: {
+      method: '',
+      key: '',
+      page: '',
+      extend: ''
+    },
+    result: null,
+    directiveIndex: 0,
     nowPage: <any>{},
     pageMap: new Map()
   },
   mutations: {
+    sendDirective(state, { method, key, page }: IPageDirective) {
+      state.nowDirective = {
+        method,
+        key: key || '',
+        page: page || '',
+        id: state.directiveIndex++
+      }
+    },
+    sendResult(state, {}: IPageResult) {
+
+    },
     mountedPage(state, pageIns: IPageIns) {
       state.nowPage = pageIns
     }
