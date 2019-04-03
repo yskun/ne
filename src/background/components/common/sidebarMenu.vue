@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <a-menu mode="inline" :inlineCollapsed="collapsed" theme="dark" @click="selectMenu" v-model="selectKeys">
-      <template v-for="m of menu">
+      <template v-for="m of menuList">
         <a-menu-item v-if="!m.children" :item="m" :key="m.id">
           <a-icon :type="m.icon" class="sidebar-icon"/>
           <span>{{m.name}}</span>
@@ -39,19 +39,11 @@
 
     @Watch('nowPageId')
     nowPageWatcher(page) {
-      if (page) {
-        let menu = this.findPage(this['menuList'], page.type)
-        if (menu) {
-          this.selectKeys = [menu.name]
-        }
-      }
+
     }
 
-    selectMenu(menuItem) {
-      if (menuItem.item && menuItem.item.$attrs.item) {
-        let item = menuItem.item.$attrs.item
-        this.$store.commit('changePageByType', item.page)
-      }
+    selectMenu({ key }: { key: string }) {
+      console.log(key)
     }
 
     findPage(source, target) {

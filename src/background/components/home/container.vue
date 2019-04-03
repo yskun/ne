@@ -7,17 +7,35 @@
 
 <script lang="ts">
   import { IPage } from '@/background/components/home/page/IPage'
-
-  let Dashboard = () => import('../pages/dashboard/dashboard.page.vue')
-  import Error404 from '../pages/Error404/error404.page.vue'
+  import { mapMutations, mapState, mapActions } from 'vuex'
   import Page from './page/Page.vue'
   import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { IPageDirective, IPageOptions } from '@/background/page/page.interface'
+  import { IPageDirective, IPageOptions, IPageResult } from '@/background/page/page.interface'
+  import uuid from 'uuid/v1'
+  import { directiveReciver } from '@/background/page/page.store'
+
+  import { dashboard } from '../pages/dashboard/dashboard.config'
+  import { error404 } from '../pages/Error404/error404.config'
 
   @Component({
     name: 'Container',
     components: {
       Page
+    },
+    computed: {
+      ...mapState('page', [
+        'result'
+      ])
+    },
+    methods: {
+      ...mapMutations('page', [
+        'sendDirective',
+        'sendResult'
+      ]),
+      ...mapActions('page', [
+        'mountPage',
+        'switchPage'
+      ])
     }
   })
   export default class Container extends Vue {
@@ -37,6 +55,8 @@
 
     @Watch('directive')
     directiveWatcher(directive: IPageDirective) {
+      console.log(directive)
+      return
       if (directive.method === '') {
         return
       }
@@ -46,6 +66,11 @@
       }
 
       this[directive.method](directive)
+    }
+
+    @Watch('result')
+    resultWatcher(result) {
+      console.log(result)
     }
 
     async create(directive: IPageDirective) {
@@ -76,10 +101,27 @@
           this.singleInstance.push({ page: pageOption.page, key })
         }
       }
+      this['sendResult']({
+        id: directive.id,
+        method: directive.method,
+        result: key
+      })
     }
 
-    switch(directive: IPageOptions) {
+    switch(directive: IPageDirective) {
+      if (!directive.key) {
+        throw new Error('create method need key option')
+      }
 
+      const { id, method, key } = directive
+
+      const result = this.pageComponent.switchPage(key)
+
+      this['sendResult'](<IPageResult>{
+        id,
+        method,
+        result
+      })
     }
 
     viewWatcher() {
@@ -95,12 +137,24 @@
       this.container.removeEventListener('scroll', this.viewWatcher, false)
     }
 
-
     async mounted() {
       this.pageComponent = <any>this.$refs.page
-      const key = await this.pageComponent.create(Error404)
-      console.log(key)
-      console.log(await this.pageComponent.remove(key))
+
+      window['switchPage'] = (key: string) => {
+        console.log(this)
+        this['switchPage']({
+          key
+        })
+      }
+
+      this['mountPage']({
+        page: dashboard
+      })
+
+      this['mountPage']({
+        page: error404
+      })
+
       this.bindViewScrollWatcher()
     }
 

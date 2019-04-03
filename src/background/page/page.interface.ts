@@ -19,7 +19,7 @@ export interface IPageDirective {
 
 export interface IPageResult {
   id?: number
-  method?: number
+  method?: 'create' | 'switch' | 'createOrSwitch' | 'close' | 'closeAll' | ''
   result?: any
 }
 
@@ -30,7 +30,7 @@ export interface IPageIns {
 }
 
 export interface IPageStore {
-  nowDirective: IPageDirective
+  nowDirective: IPageDirective[]
   result?: IPageResult
   directiveIndex: number
   nowPage: IPageIns

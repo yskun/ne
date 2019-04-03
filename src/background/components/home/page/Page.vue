@@ -30,7 +30,7 @@
       if (!this.pageStore.has(key)) {
         return false
       }
-      this.nowPage = this.pageStore.get(key)
+      this.nowPage = this.pageStore.get(key).page
       this.nowKey = key
       return true
     }

@@ -44,11 +44,6 @@
     }
 
     created() {
-      this.$store.commit('setMenu', )
-      let instances = pageCenter.mountDefaultPage()
-      if (instances.length > 0) {
-        this.$store.commit('changePageById', instances[0].ins[0].$id)
-      }
     }
   }
 

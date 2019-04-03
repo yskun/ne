@@ -1,17 +1,22 @@
 import { Module } from 'vuex/types'
 import { Vue } from 'vue-property-decorator'
-import * as uuid from 'uuid/v1'
-import { getPageOptions, initPage } from '@/background/page/page.util'
-import { IPageDirective, IPageIns, IPageResult, IPageStore } from '@/background/page/page.interface'
+import { IPageDirective, IPageIns, IPageOptions, IPageResult, IPageStore } from '@/background/page/page.interface'
+
+export function directiveReciver(context: Vue, callback) {
+  context.$watch('$store.state.page.nowDirective', () => {
+
+  }, {
+    deep: true
+  })
+  return () => {
+    console.log(this, context)
+  }
+}
 
 export const page: Module<IPageStore, any> = {
+  namespaced: true,
   state: {
-    nowDirective: {
-      method: '',
-      key: '',
-      page: '',
-      extend: ''
-    },
+    nowDirective: [],
     result: null,
     directiveIndex: 0,
     nowPage: <any>{},
@@ -19,70 +24,43 @@ export const page: Module<IPageStore, any> = {
   },
   mutations: {
     sendDirective(state, { method, key, page }: IPageDirective) {
-      state.nowDirective = {
+      state.nowDirective.push({
         method,
         key: key || '',
         page: page || '',
         id: state.directiveIndex++
-      }
+      })
     },
-    sendResult(state, {}: IPageResult) {
-
+    sendResult(state, { id, method, result }: IPageResult) {
+      state.result = {
+        id: id || 0,
+        method,
+        result
+      }
     },
     mountedPage(state, pageIns: IPageIns) {
       state.nowPage = pageIns
     }
   },
   actions: {
-    async createPage({ commit, state }, { page, mounted = true }: { page: any, mounted: boolean }) {
-      // 判断是否为异步加载组件
-      console.log(page)
-      if (typeof page === 'function' && !(page.prototype instanceof Vue)) {
-        page = (await page()).default
-      }
-
-      let pageOptions = getPageOptions(page)
-      let id: string
-      if (!pageOptions.multiplePage) {
-        if (state.pageMap.has(pageOptions.type)) {
-          return false
-        }
-        id = pageOptions.type || uuid()
-      } else {
-        id = uuid()
-      }
-
-      let ins = await initPage(page)
-
-      let result = {
-        id, ins, page
-      }
-      state.pageMap.set(id, result)
-      if (mounted) {
-        commit('mountedPage', result)
-      }
-      return result
+    mountPage({ commit, state }, { page }: { page: IPageOptions }) {
+      const id = state.directiveIndex
+      commit('sendDirective', <IPageDirective>{
+        method: 'create',
+        page
+      })
+      return id
     },
-    async switchPage({ commit, state }, { id }: { id: string }) {
-      if (!state.pageMap.has(id)) {
-        throw new Error('no page instance on pageMap, please make sure the id:' + id + 'is a real id')
-      }
-      let result = state.pageMap.get(id)
-      if (state.nowPage === result.ins) {
-        return false
-      }
-      commit('mountedPage', result)
-      return true
+    switchPage({ commit, state }, { key }: { key: string }) {
+      const id = state.directiveIndex
+      commit('sendDirective', <IPageDirective>{
+        method: 'switch',
+        key
+      })
+      return id
     },
     async createOrSwitchPage({ state, dispatch }, { page }: { page: any }) {
-      if (typeof page === 'function' && !(page.prototype instanceof Vue)) {
-        page = (await page()).default
-      }
-      let pageOptions = getPageOptions(page)
-      if (!pageOptions.multiplePage && state.pageMap.has(pageOptions.type)) {
-        return dispatch('switchPage', { id: pageOptions.type })
-      }
-      return dispatch('createPage', page)
+
     },
     removePage({ commit, state }, { id, switchWhenOnMounted = true }: { id: string, switchWhenOnMounted: boolean }) {
       if (!state.pageMap.has(id)) {

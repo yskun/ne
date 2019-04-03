@@ -10,7 +10,6 @@
 </template>
 
 <script lang="ts">
-  import { pageCenter } from './page-center/page-center'
   import SidebarMenu from '../common/sidebarMenu.vue'
   import { Vue, Component } from 'vue-property-decorator'
   import { mapState } from 'vuex'

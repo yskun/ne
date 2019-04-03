@@ -12,12 +12,13 @@ export function handleMenu(menu: IMenu[]): IMenu[] {
 }
 
 function handleShortCut(menu: IMenu): IMenu {
-  const { page: { name, icon } } = menu
+  const { page, page: { name, icon } } = menu
 
   return {
     id: menu.id || uuid(),
     name: menu.name || name || '未命名的页面',
-    icon: menu.icon || icon || 'default'
+    icon: menu.icon || icon || 'default',
+    page
   }
 }
 
