@@ -1,11 +1,14 @@
+import { IPageOptions } from '@/background/page/page.interface'
+
 export interface IMenu {
-  icon?: '',
-  name: '',
-  type?: '', // type 需与Page中的type匹配
-  page?: any,
+  id?: string
+  icon?: string
+  name?: string
+  page?: IPageOptions
   children?: IMenu[]
 }
 
 export interface IMenuStore {
-  menuList: IMenu[]
+  menuList: IMenu[],
+  menuCollapsed: boolean
 }

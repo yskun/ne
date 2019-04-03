@@ -1,7 +1,7 @@
 <template>
   <div class="top-nav nav">
     <div @click="changeMenuStatus" class="menu">
-      <a-icon :type="collapsed ? 'right' : 'left'"></a-icon>
+      <a-icon :type="menuCollapsed ? 'right' : 'left'"></a-icon>
     </div>
     <div class="menu">
       <a-icon type="loading"></a-icon>
@@ -12,24 +12,30 @@
 
 <script lang="ts">
   import TaskBar from './task-bar.vue'
+  import { Vue, Component } from 'vue-property-decorator'
+  import { mapState, mapMutations } from 'vuex'
 
-  export default {
+  @Component({
     name: 'TopNav',
     components: { TaskBar },
     props: {
-      user: Object,
       nowPages: Array,
       menu: Array
     },
     computed: {
-      collapsed() {
-        return this.$store.state.menuCollapsed
-      }
+      ...mapState('menu', [
+        'menuCollapsed'
+      ])
     },
     methods: {
-      changeMenuStatus() {
-        this.$store.commit('changeMenuCollapsed')
-      }
+      ...mapMutations('menu', [
+        'setMenuCollapsed'
+      ])
+    }
+  })
+  export default class TopNav extends Vue {
+    changeMenuStatus() {
+      this['setMenuCollapsed'](!this['menuCollapsed'])
     }
   }
 </script>

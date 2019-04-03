@@ -1,8 +1,8 @@
 
 export interface IPageOptions {
-  type?: string // 识别
-  name?: string // 名称
-  icon?: string // 图标
+  type?: string
+  name?: string
+  icon?: string
   page: any
   multiplePage?: boolean
 

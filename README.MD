@@ -35,7 +35,7 @@ yarn（推荐）
 |   |   |-- views 主体框架页面
 |   |
 |   |--pages **后台页面**
-|       |-- list.js 后台页面列表
+|       |-- list.ts 后台页面列表
 |
 |--public web路径
 |
@@ -56,7 +56,7 @@ page的推荐目录格式如下：
 |            |-- my-page.page.vue    **page的主页面，使用page作为后缀**
 |            |-- my-page.modal.vue   **page的模态框文件，使用modal作为后缀**
 |
-|-- list.js page列表
+|-- list.ts page列表
 ```
 
 **page页面需在list.js注册后，才能使用**
@@ -83,7 +83,7 @@ export default {
 在项目中，使用了Ant Design的一个Vue实现版本作为UI库，因此在没有特殊的需求下，为了保持项目的一致性，请使用`ant-design-vue`作为UI库实现功能。
 在配置好文件后，还需要将配置文件引入list.js文件中。如下所示
 ```
-# list.js
+# list.ts
 import myPage from "./my-page/my-page.config";
 
 export const pageList = [

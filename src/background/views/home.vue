@@ -1,7 +1,7 @@
 <template>
   <div class="view">
     <modal-container/>
-    <sidebar :menu="menu"/>
+    <sidebar/>
     <div class="main-area">
       <top-nav :user="user" :menu="now.menu"/>
       <container/>

@@ -4,7 +4,7 @@
       {{collapsed ? collapseTitle : title}}
     </div>
     <div style="margin-top: -4px">
-      <sidebar-menu :menu="menu"></sidebar-menu>
+      <sidebar-menu/>
     </div>
   </div>
 </template>
@@ -12,99 +12,24 @@
 <script lang="ts">
   import { pageCenter } from './page-center/page-center'
   import SidebarMenu from '../common/sidebarMenu.vue'
+  import { Vue, Component } from 'vue-property-decorator'
+  import { mapState } from 'vuex'
 
-  export default {
+  @Component({
     name: 'Sidebar',
     components: { SidebarMenu },
-    props: {
-      menu: Array,
-      title: {
-        default: 'Ne. 中台管理系统'
-      },
-      collapseTitle: {
-        default: 'Ne.'
-      }
-    },
-    data() {
-      return {
-        nowMenu: {},
-        menuIns: {}
-      }
-    },
     computed: {
-      collapsed() {
-        return this.$store.state.menuCollapsed
-      }
-    },
-    methods: {
-      itemClick(m) {
-        if (this.setNowMenuStatus) {
-          this.setNowMenuStatus = false
-          return
-        }
-        m = m.pop()
-        if (!m) {
-          return
-        }
-        this.$store.commit('changePageByType', m.page)
-      },
-      setNowMenu(m) {
-        if (this.nowMenu.name === m.name) {
-          return
-        }
-        this.setNowMenuStatus = true
-        this.menuIns.setCheck({
-          name: m.name
-        })
-      },
-      findPage(source, target) {
-        let mTarget
-
-        function find(source) {
-          return source.find(m => {
-            if (target === m.page) {
-              mTarget = m
-              return true
-            }
-
-            if (m.children) {
-              return find(m.children)
-            }
-          })
-        }
-
-        find(source)
-        return mTarget
-      },
-      calDefaultPage() {
-        if (!(pageCenter.defaultPageList.length > 0 && this.menu.length > 0)) {
-          return
-        }
-        let defaultPage = pageCenter.defaultPageList[0]
-        let mTarget = this.findPage(this.menu, defaultPage.type)
-        if (mTarget) {
-          this.setNowMenu(mTarget)
-          console.log(this.nowMenu)
-        }
-      }
-    },
-    watch: {
-      menu() {
-        this.calDefaultPage()
-      },
-      '$store.state.page'(page) {
-        if (page) {
-          let menu = this.findPage(this.menu, page.type)
-          if (menu) {
-            // this.setNowMenu(menu)
-            this.nowMenu = menu
-          }
-        }
-      }
-    },
-    mounted() {
-      this.menuIns = this.$refs.menuIns
+      ...mapState([
+        'title',
+        'collapseTitle'
+      ]),
+      ...mapState('menu', {
+        collapsed: 'menuCollapsed'
+      })
     }
+  })
+  export default class SideBar extends Vue {
+
   }
 </script>
 

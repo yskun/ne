@@ -1,18 +1,19 @@
 import { Module } from 'vuex/types'
 import { IMenu, IMenuStore } from '@/background/menu/menu.interface'
+import { handleMenu } from '@/background/menu/menu.method'
 
 export const menu: Module<IMenuStore, any> = {
+  namespaced: true,
   state: {
-    menuList: []
+    menuList: [],
+    menuCollapsed: false
   },
   mutations: {
     setMenu(state, menu: IMenu[]) {
-      state.menuList = menu
-    }
-  },
-  actions: {
-    async setMenuWithAuth({ commit }, menu: IMenu[]) {
-      // brbrbrbr 还没写兄弟
+      state.menuList = handleMenu(menu)
+    },
+    setMenuCollapsed(state, is: boolean) {
+      state.menuCollapsed = is
     }
   }
 }

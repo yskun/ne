@@ -1,22 +1,20 @@
 import Vue from 'vue'
-import App from './background/app.vue'
 import router from './background/router'
-import { Store } from './background/store'
-import Antd from 'ant-design-vue'
-import { message } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import { NeBackground } from '@/background/service/ne-background'
+import { defaultPageList } from '@/background/components/pages/list'
 
-Vue.use(Antd)
+
+const ne = new NeBackground()
+ne.setMenu(defaultPageList)
 
 Vue.config.productionTip = false
 
 let vue = new Vue({
   router,
-  store: Store,
-  render: h => h(App)
+  store: ne.getStore(),
+  render: h => h(ne.getApp())
 })
-
-window['$message'] = message
 
 
 vue.$mount('#app')
