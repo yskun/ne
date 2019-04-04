@@ -5,15 +5,15 @@
 </template>
 
 <script lang="ts">
-  import { IPage } from '@/background/components/home/page/IPage'
+  import { IPage } from '@/background/interface/page-component.interface'
   import { mapMutations, mapState, mapActions } from 'vuex'
-  import Page from './page/Page.vue'
+  import Page from '@/background/components/Page.vue'
   import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { IPageDirective, IPageIns, IPageOptions, IPageResult } from '@/background/page/page.interface'
+  import { IPageDirective, IPageIns, IPageOptions, IPageResult } from '@/background/interface/page.interface'
 
-  import { dashboard } from '../pages/dashboard/dashboard.config'
-  import { error404 } from '../pages/Error404/error404.config'
-  import { DirectiveMap, ResultMap } from '@/background/page/page.store'
+  import { dashboard } from '@/background/pages/dashboard/dashboard.config'
+  import { error404 } from '@/background/pages/Error404/error404.config'
+  import { DirectiveMap, ResultMap } from '@/background/stores/page.store'
 
   @Component({
     name: 'Container',

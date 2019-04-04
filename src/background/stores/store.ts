@@ -1,7 +1,7 @@
 import vue from 'vue'
 import vuex from 'vuex'
-import { page } from '@/background/page/page.store'
-import { menu } from '@/background/menu/menu.store'
+import { page } from '@/background/stores/page.store'
+import { menu } from '@/background/stores/menu.store'
 
 vue.use(vuex)
 

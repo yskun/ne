@@ -1,6 +1,6 @@
-import { Module } from 'vuex/types'
+import { Module } from 'vuex'
 import { Vue } from 'vue-property-decorator'
-import { IPageDirective, IPageIns, IPageOptions, IPageResult, IPageStore } from '@/background/page/page.interface'
+import { IPageDirective, IPageIns, IPageOptions, IPageResult, IPageStore } from '@/background/interface/page.interface'
 
 export function DirectiveMap() {
   return function(target, prop, desc) {

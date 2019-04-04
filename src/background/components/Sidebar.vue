@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-  import SidebarMenu from '../common/sidebarMenu.vue'
+  import SidebarMenu from '@/background/components/SidebarMenu.vue'
   import { Vue, Component } from 'vue-property-decorator'
   import { mapState } from 'vuex'
 

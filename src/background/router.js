@@ -7,13 +7,6 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/login',
-      name: 'login',
-      component: () => {
-        return import('./views/login.vue')
-      }
-    },
-    {
       path: '/',
       name: 'home',
       component: () => {
@@ -22,9 +15,3 @@ export default new Router({
     }
   ]
 })
-
-// const router = new Router()
-
-// router.beforeEach((to, from, next) => {
-//   // ...
-// })

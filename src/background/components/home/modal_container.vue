@@ -9,11 +9,10 @@
 </template>
 
 <script>
-import { pageCenter } from './page-center/page-center'
 
 export default {
   name: 'ModalContainer',
-  components: pageCenter.getComponent('modals', {}),
+  components: [],
   data() {
     return {
       modals: []

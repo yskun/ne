@@ -17,10 +17,10 @@
 
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { mapState, mapActions, mapGetters } from 'vuex'
-  import SubMenu from './subMenu.vue'
-  import { menu } from '@/background/menu/menu.store'
-  import { IMenu } from '@/background/menu/menu.interface'
-  import { IPageIns, IPageOptions } from '@/background/page/page.interface'
+  import SubMenu from './SubMenu.vue'
+  import { menu } from '@/background/stores/menu.store'
+  import { IMenu } from '@/background/interface/menu.interface'
+  import { IPageIns, IPageOptions } from '@/background/interface/page.interface'
 
   @Component({
     name: 'SidebarMenu',

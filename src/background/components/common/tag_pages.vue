@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import { pageCenter } from '../home/page-center/page-center'
 
 export default {
   name: 'tagPages',
@@ -52,7 +51,6 @@ export default {
           this.pageTagsList.find(p => p.defaultPage) || this.pageTagsList[0]
         )
       }
-      pageCenter.removePage(item.$id)
       this.clickByStop = true
     },
     linkTo(item) {

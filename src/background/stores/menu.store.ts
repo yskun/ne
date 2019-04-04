@@ -1,5 +1,5 @@
-import { Module } from 'vuex/types'
-import { IMenu, IMenuStore } from '@/background/menu/menu.interface'
+import { Module } from 'vuex'
+import { IMenu, IMenuStore } from '@/background/interface/menu.interface'
 import { handleMenu } from '@/background/menu/menu.method'
 
 export const menu: Module<IMenuStore, any> = {

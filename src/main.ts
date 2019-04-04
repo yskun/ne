@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import router from './background/router'
 import 'ant-design-vue/dist/antd.css'
-import { NeBackground } from '@/background/service/ne-background'
-import { defaultPageList } from '@/background/components/pages/list'
+import { NeBackground } from '@/background/ne-background'
+import { defaultPageList } from '@/background/pages/list'
 
 
 const ne = new NeBackground()

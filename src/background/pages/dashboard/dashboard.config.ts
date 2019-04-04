@@ -1,4 +1,4 @@
-import { IPageOptions } from '@/background/page/page.interface'
+import { IPageOptions } from '@/background/interface/page.interface'
 
 export const dashboard:IPageOptions = {
   type: 'dashboard',

@@ -1,8 +1,8 @@
 import app from '@/background/app.vue'
 import Vue, { VueConstructor } from 'vue'
 import Antd from 'ant-design-vue'
-import { IMenu } from '@/background/menu/menu.interface'
-import { Store } from '@/background/store'
+import { IMenu } from '@/background/interface/menu.interface'
+import { Store } from '@/background/stores/store'
 
 Vue.use(Antd)
 
