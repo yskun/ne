@@ -1,7 +1,6 @@
 <template>
   <div class="view-container" ref="container">
-    <page ref="page">
-    </page>
+    <page ref="page"/>
   </div>
 </template>
 
@@ -10,12 +9,11 @@
   import { mapMutations, mapState, mapActions } from 'vuex'
   import Page from './page/Page.vue'
   import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { IPageDirective, IPageOptions, IPageResult } from '@/background/page/page.interface'
-  import uuid from 'uuid/v1'
-  import { directiveReciver } from '@/background/page/page.store'
+  import { IPageDirective, IPageIns, IPageOptions, IPageResult } from '@/background/page/page.interface'
 
   import { dashboard } from '../pages/dashboard/dashboard.config'
   import { error404 } from '../pages/Error404/error404.config'
+  import { DirectiveMap, ResultMap } from '@/background/page/page.store'
 
   @Component({
     name: 'Container',
@@ -24,13 +22,17 @@
     },
     computed: {
       ...mapState('page', [
-        'result'
+        'result',
+        'directive',
+        'mountedPageList'
       ])
     },
     methods: {
       ...mapMutations('page', [
         'sendDirective',
-        'sendResult'
+        'sendResult',
+        'setMountedPageList',
+        'setNowPageId'
       ]),
       ...mapActions('page', [
         'mountPage',
@@ -41,9 +43,13 @@
   export default class Container extends Vue {
 
     container: Element
-    pageComponent: IPage
     singleInstance: { page: any, key: string }[] = []
-    nowInstanceList: { page: any, ins: any, key: string, option: IPageOptions }[] = []
+    nowInstanceList: { ins: any, option: IPageIns }[] = []
+
+    get pageComponent(): IPage {
+      return <any>this.$refs.page
+    }
+
 
     get nowPage() {
       return this.$store.state.page.nowPage.ins
@@ -54,9 +60,8 @@
     }
 
     @Watch('directive')
+    @DirectiveMap()
     directiveWatcher(directive: IPageDirective) {
-      console.log(directive)
-      return
       if (directive.method === '') {
         return
       }
@@ -69,8 +74,9 @@
     }
 
     @Watch('result')
+    @ResultMap()
     resultWatcher(result) {
-      console.log(result)
+      console.log(`container: resultWatcher ->`, result)
     }
 
     async create(directive: IPageDirective) {
@@ -91,16 +97,22 @@
       const key = await this.pageComponent.create(pageOption.page)
       if (key) {
         const ins = this.pageComponent.getInstance(key)
-        this.nowInstanceList.push({
-          ins,
-          key,
-          page: pageOption.page,
-          option: pageOption
+        const option: IPageIns = {
+          page: pageOption,
+          key
+        }
+        this.nowInstanceList.push({ ins, option })
+        this['setMountedPageList']({
+          method: 'add',
+          ins: option
         })
         if (pageOption.multiplePage === false) {
           this.singleInstance.push({ page: pageOption.page, key })
         }
       }
+
+      this['setNowPageId'](key)
+
       this['sendResult']({
         id: directive.id,
         method: directive.method,
@@ -117,6 +129,7 @@
 
       const result = this.pageComponent.switchPage(key)
 
+      this['setNowPageId'](key)
       this['sendResult'](<IPageResult>{
         id,
         method,
@@ -138,7 +151,6 @@
     }
 
     async mounted() {
-      this.pageComponent = <any>this.$refs.page
 
       window['switchPage'] = (key: string) => {
         console.log(this)

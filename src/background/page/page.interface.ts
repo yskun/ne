@@ -1,3 +1,4 @@
+import { VueConstructor } from 'vue'
 
 export interface IPageOptions {
   type?: string
@@ -24,15 +25,14 @@ export interface IPageResult {
 }
 
 export interface IPageIns {
-  ins: any
-  id: string
-  page: any
+  page: IPageOptions
+  key: string
 }
 
 export interface IPageStore {
   nowDirective: IPageDirective[]
-  result?: IPageResult
+  result?: IPageResult[]
   directiveIndex: number
-  nowPage: IPageIns
-  pageMap: Map<string, any>
+  nowPageId: string
+  mountedPageList: IPageIns[]
 }
