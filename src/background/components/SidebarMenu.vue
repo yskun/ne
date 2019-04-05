@@ -15,12 +15,12 @@
 
 <script lang="ts">
 
-  import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { mapState, mapActions, mapGetters } from 'vuex'
+  import { Component, Vue, Watch } from 'vue-property-decorator'
+  import { mapActions, mapGetters, mapState } from 'vuex'
   import SubMenu from './SubMenu.vue'
   import { menu } from '@/background/stores/menu.store'
-  import { IMenu } from '@/background/interface/menu.interface'
-  import { IPageIns, IPageOptions } from '@/background/interface/page.interface'
+  import { IMenu } from '@/background/interfaces/menu.interface'
+  import { IPageIns, IPageOptions } from '@/background/interfaces/page.interface'
 
   @Component({
     name: 'SidebarMenu',

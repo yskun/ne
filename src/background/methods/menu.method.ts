@@ -1,4 +1,4 @@
-import { IMenu } from '@/background/interface/menu.interface'
+import { IMenu } from '@/background/interfaces/menu.interface'
 import uuid from 'uuid/v1'
 
 export function handleMenu(menu: IMenu[]): IMenu[] {

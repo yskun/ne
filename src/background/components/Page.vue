@@ -7,7 +7,7 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
   import uuid from 'uuid/v1'
-  import { IPage } from '@/background/interface/page-component.interface'
+  import { IPage } from '@/background/interfaces/page-component.interface'
 
   /**
    * 用来管理页面数据

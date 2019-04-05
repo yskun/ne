@@ -6,17 +6,17 @@
     <div class="menu">
       <a-icon type="loading"></a-icon>
     </div>
-    <task-bar :now-pages="menu"/>
+    <TaskBar/>
   </div>
 </template>
 
 <script lang="ts">
-  import TaskBar from './task-bar.vue'
-  import { Vue, Component } from 'vue-property-decorator'
-  import { mapState, mapMutations } from 'vuex'
+  import TaskBar from './TaskBar.vue'
+  import { Component, Vue } from 'vue-property-decorator'
+  import { mapMutations, mapState } from 'vuex'
 
   @Component({
-    name: 'TopNav',
+    name: 'Navigation',
     components: { TaskBar },
     props: {
       nowPages: Array,

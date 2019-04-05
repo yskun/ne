@@ -1,4 +1,4 @@
-import { IMenu } from '@/background/interface/menu.interface'
+import { IMenu } from '@/background/interfaces/menu.interface'
 import { dashboard } from '@/background/pages/dashboard/dashboard.config'
 import { error404 } from '@/background/pages/Error404/error404.config'
 

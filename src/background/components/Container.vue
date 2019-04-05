@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-  import { IPage } from '@/background/interface/page-component.interface'
-  import { mapMutations, mapState, mapActions } from 'vuex'
+  import { IPage } from '@/background/interfaces/page-component.interface'
+  import { mapActions, mapMutations, mapState } from 'vuex'
   import Page from '@/background/components/Page.vue'
-  import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { IPageDirective, IPageIns, IPageOptions, IPageResult } from '@/background/interface/page.interface'
+  import { Component, Vue, Watch } from 'vue-property-decorator'
+  import { IPageDirective, IPageIns, IPageOptions, IPageResult } from '@/background/interfaces/page.interface'
 
   import { dashboard } from '@/background/pages/dashboard/dashboard.config'
   import { error404 } from '@/background/pages/Error404/error404.config'

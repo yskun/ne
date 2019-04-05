@@ -1,5 +1,3 @@
-import { VueConstructor } from 'vue'
-
 export interface IPageOptions {
   type?: string
   name?: string

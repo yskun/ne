@@ -1,12 +1,12 @@
 import { Module } from 'vuex'
-import { IMenu, IMenuStore } from '@/background/interface/menu.interface'
-import { handleMenu } from '@/background/menu/menu.method'
+import { IMenu, IMenuStore } from '@/background/interfaces/menu.interface'
+import { handleMenu } from '@/background/methods/menu.method'
 
 export const menu: Module<IMenuStore, any> = {
   namespaced: true,
   state: {
     menuList: [],
-    menuCollapsed: false
+    menuCollapsed: true
   },
   mutations: {
     setMenu(state, menu: IMenu[]) {

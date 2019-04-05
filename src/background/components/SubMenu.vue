@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Prop } from 'vue-property-decorator'
-  import { IMenu } from '@/background/interface/menu.interface'
+  import { Component, Prop, Vue } from 'vue-property-decorator'
+  import { IMenu } from '@/background/interfaces/menu.interface'
 
   @Component({
     name: 'subMenu'

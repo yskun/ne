@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import TagPages from '../common/tag_pages'
+  import TagPages from './common/tag_pages'
 
-export default {
+  export default {
   name: 'task-bar',
   components: {
     TagPages

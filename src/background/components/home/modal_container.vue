@@ -8,11 +8,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 
-export default {
+  import { Component, Vue } from 'vue-property-decorator'
+
+  @Component({
   name: 'ModalContainer',
-  components: [],
   data() {
     return {
       modals: []
@@ -26,7 +27,9 @@ export default {
       this.modals = modals
     }
   }
-}
+  })
+  export default class ModalContainer extends Vue {
+  }
 </script>
 
 <style scoped>
