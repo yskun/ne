@@ -8,7 +8,7 @@
   import TagPages from './common/tag_pages'
 
   export default {
-  name: 'task-bar',
+    name: 'Tasker',
   components: {
     TagPages
   },

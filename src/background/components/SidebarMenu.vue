@@ -6,7 +6,7 @@
           <a-icon :type="m.icon" class="sidebar-icon"/>
           <span>{{m.name}}</span>
         </a-menu-item>
-        <sub-menu v-else :menu="m" :key="m.id"/>
+        <SubMenu :key="m.id" :menu="m" v-else/>
       </template>
     </a-menu>
   </div>

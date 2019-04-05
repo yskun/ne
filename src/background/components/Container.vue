@@ -1,6 +1,6 @@
 <template>
   <div class="view-container" ref="container">
-    <page ref="page"/>
+    <Page ref="page"/>
   </div>
 </template>
 

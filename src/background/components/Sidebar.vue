@@ -4,14 +4,14 @@
       {{collapsed ? collapseTitle : title}}
     </div>
     <div style="margin-top: -4px">
-      <sidebar-menu/>
+      <SidebarMenu/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
   import SidebarMenu from '@/background/components/SidebarMenu.vue'
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Component, Vue } from 'vue-property-decorator'
   import { mapState } from 'vuex'
 
   @Component({

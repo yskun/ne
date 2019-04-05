@@ -2,7 +2,7 @@
   <div class="view">
     <Sidebar/>
     <div class="main-area">
-      <TopNav/>
+      <Navigation/>
       <Container/>
     </div>
   </div>
@@ -12,14 +12,14 @@
   // @ is an alias to /src
 
   import Sidebar from '../components/Sidebar.vue'
-  import TopNav from '../components/Navigation.vue'
+  import Navigation from '../components/Navigation.vue'
   import Container from '../components/Container.vue'
   import { Component, Vue } from 'vue-property-decorator'
 
   @Component({
     components: {
       Container,
-      TopNav,
+      Navigation,
       Sidebar
     }
   })
