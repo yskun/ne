@@ -75,11 +75,11 @@
     }
 
     selectMenu({ key }: { key: string }) {
-      if (this.nowKey === key) {
+      const shortcut = this.getShortcut(key)
+      if (this.nowKey === key && shortcut.page.multiplePage === false) {
         return
       }
       this.nowKey = key
-      const shortcut = this.getShortcut(key)
       if (shortcut) {
         this['switchOrMountPage']({ page: shortcut.page })
       } else {

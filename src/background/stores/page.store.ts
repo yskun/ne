@@ -122,9 +122,14 @@ export const page: Module<IPageStore, any> = {
       })
       return id
     },
-    removePage({ commit, state }, { id, page }: { id?: string, page?: IPageOptions }) {
-      if (id) {
-
+    closePage({ commit, state }, { key, page }: { key?: string, page?: IPageOptions }) {
+      if (key) {
+        const id = state.directiveIndex
+        commit('sendDirective', <IPageDirective>{
+          method: 'close',
+          key
+        })
+        return id
       } else if (page) {
 
       }

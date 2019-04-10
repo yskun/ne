@@ -4,7 +4,7 @@
       <a-icon :type="menuCollapsed ? 'right' : 'left'"></a-icon>
     </div>
     <div class="menu">
-      <a-icon type="loading"></a-icon>
+      <a-icon type="loading" v-if="false"></a-icon>
     </div>
     <Tasker/>
   </div>

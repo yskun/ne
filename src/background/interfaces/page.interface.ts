@@ -1,3 +1,5 @@
+import { ITaskOptions } from '@/background/interfaces/task.interface'
+
 export interface IPageOptions {
   type?: string
   name?: string
@@ -24,6 +26,7 @@ export interface IPageResult {
 
 export interface IPageIns {
   page: IPageOptions
+  task: ITaskOptions
   key: string
 }
 

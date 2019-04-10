@@ -11,7 +11,7 @@ export const Store = new vuex.Store({
     menu
   },
   state: {
-    title: 'Ne. 中台管理系统',
+    title: 'Ne. 项目管理终端',
     collapseTitle: 'Ne.',
     modals: [],
   },
