@@ -1,46 +1,34 @@
-# Ne 中台管理系统
+# Ne 后台管理终端
+适用于快速开发、实例独立的后台管理终端。  
+基于Vue构建，内置页面管理系统，方便开发人员整合多后台管理页面，无需担扰页面间数据干扰。
 
-使用Vue 2.6.x、ant-design-vue(Ant Design)构建
+## 运行
 
-## 运行、开发
+npm（或yarn）
 
-npm
+开发：```npm serve```  
+构建：```npm build```
 
-```
+# 开发
+语言： TypeScript
 
-开发：npm serve
-发布：npm build
-```
-yarn（推荐）
-
-```
-
-开发：yarn serve
-发布：yarn build
-```
 # 项目结构
 
 ```
-
 .
 |--src 项目源码
-|   |
-|   |--assets 资源素材
-|   |   |-- icon 图标，适用于阿里巴巴图标库
-|   |   |-- ... 其他素材
 |   |
 |   |--background 后台系统主源码
 |   |   |-- components 项目骨架
 |   |   |-- service 通讯服务
 |   |   |-- views 主体框架页面
-|   |
-|   |--pages **后台页面**
-|       |-- list.ts 后台页面列表
 |
 |--public web路径
 |
 |-- ...
 ```
+
+注：由于该项目是基于旧项目构建。因此，在后期将会使用新的规范进行开发。
 
 **项目在持续开发中，下述内容已过时**
 
