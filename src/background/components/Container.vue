@@ -1,6 +1,8 @@
 <template>
   <div class="view-container" ref="container">
-    <Page ref="page"/>
+    <PageNew>
+      <component :is="component"/>
+    </PageNew>
   </div>
 </template>
 
@@ -14,10 +16,12 @@
   import { dashboard } from '@/background/pages/dashboard/dashboard.config'
   import { DirectiveMap, ResultMap } from '@/background/stores/page.store'
   import { ITaskOptions } from '@/background/interfaces/task.interface'
+  import PageNew from '@/background/components/PageNew.vue'
 
   @Component({
     name: 'Container',
     components: {
+      PageNew,
       Page
     },
     computed: {
@@ -45,6 +49,8 @@
     }
   })
   export default class Container extends Vue {
+
+    component = dashboard.page
 
     container: Element
     singleInstance: { page: any, key: string }[] = []
@@ -183,17 +189,17 @@
     }
 
     async mounted() {
-
-      window['switchPage'] = (key: string) => {
-        console.log(this)
-        this['switchPage']({
-          key
-        })
-      }
-
-      this['mountPage']({
-        page: dashboard
-      })
+      //
+      // window['switchPage'] = (key: string) => {
+      //   console.log(this)
+      //   this['switchPage']({
+      //     key
+      //   })
+      // }
+      //
+      // this['mountPage']({
+      //   page: dashboard
+      // })
 
       this.bindViewScrollWatcher()
     }
