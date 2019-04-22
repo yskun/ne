@@ -1,5 +1,5 @@
 import { IPageOptions } from '@/background/interfaces/page.interface'
-import da from './dashboard.page.vue'
+const da = () => import('./dashboard.page.vue')
 
 export const dashboard:IPageOptions = {
   type: 'dashboard',

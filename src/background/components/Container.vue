@@ -1,7 +1,6 @@
 <template>
   <div class="view-container" ref="container">
-    <PageNew>
-      <component :is="component"/>
+    <PageNew @result="resulta($event)">
     </PageNew>
   </div>
 </template>
@@ -173,6 +172,10 @@
 
       const { id, method, key } = directive
 
+    }
+
+    resulta(e) {
+      console.log(e)
     }
 
     viewWatcher() {
