@@ -45,10 +45,7 @@
 </style>
 <script lang="ts">
   import zhCn from 'ant-design-vue/lib/locale-provider/zh_CN'
-  import { Vue, Component } from 'vue-property-decorator'
-  import { PageManager } from '@/background/manager/page-manager'
-  import Dashboard from '@/background/pages/dashboard/dashboard.page.vue'
-  import Error404 from '@/background/pages/Error404/error404.page.vue'
+  import { Component, Vue } from 'vue-property-decorator'
 
   @Component({
     name: 'app'
