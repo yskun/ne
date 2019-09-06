@@ -1,7 +1,6 @@
 <template>
   <div class="view-container" ref="container">
-    <PageNew @result="resulta($event)">
-    </PageNew>
+    <Page/>
   </div>
 </template>
 
@@ -20,7 +19,6 @@
   @Component({
     name: 'Container',
     components: {
-      PageNew,
       Page
     },
     computed: {

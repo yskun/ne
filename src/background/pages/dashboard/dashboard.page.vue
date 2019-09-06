@@ -1,6 +1,9 @@
 <template>
   <div @click="click">
-    这是控制台
+    这是控制台w {{test}} {{cc}}
+    <ul>
+      <li v-for="l in list">{{l}}</li>
+    </ul>
   </div>
 </template>
 
@@ -9,7 +12,7 @@
   import { Vue, Component } from 'vue-property-decorator'
 
   @Component({
-    name: 'Dashboard'
+    props: { test: Number, cc: Object }
   })
   export default class Dashboard extends Vue {
 
@@ -17,8 +20,12 @@
 
     data: 2
 
+    list = []
+
     click() {
       console.log(`这是控制台`)
+      this.list.push(`test`)
+      this.$emit('cess', 123)
     }
 
     mounted() {

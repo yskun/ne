@@ -7,50 +7,56 @@
 </template>
 
 <style lang="less">
-body {
-  line-height: 20px;
-  font-weight: 400;
-  font-size: 0.9375rem;
-  margin: 0;
-}
+  body {
+    line-height: 20px;
+    font-weight: 400;
+    font-size: 0.9375rem;
+    margin: 0;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-.view {
-  width: 100vw;
-  min-height: 100vh;
-  height: 100%;
-}
+  .view {
+    width: 100vw;
+    min-height: 100vh;
+    height: 100%;
+  }
 
-.clickable {
-  cursor: pointer;
-  user-select: none;
-}
+  .clickable {
+    cursor: pointer;
+    user-select: none;
+  }
 
-.ivu-tag-dot {
-  line-height: 31px !important;
-}
+  .ivu-tag-dot {
+    line-height: 31px !important;
+  }
 
-.ivu-tag {
-  font-size: 14px !important;
-}
+  .ivu-tag {
+    font-size: 14px !important;
+  }
 </style>
 <script lang="ts">
-import zhCn from 'ant-design-vue/lib/locale-provider/zh_CN'
-import { Vue, Component } from 'vue-property-decorator'
+  import zhCn from 'ant-design-vue/lib/locale-provider/zh_CN'
+  import { Vue, Component } from 'vue-property-decorator'
+  import { PageManager } from '@/background/manager/page-manager'
+  import Dashboard from '@/background/pages/dashboard/dashboard.page.vue'
+  import Error404 from '@/background/pages/Error404/error404.page.vue'
 
-@Component({
-  name: 'app'
-})
-export default class App extends Vue {
-  zhCn = zhCn
-}
+  @Component({
+    name: 'app'
+  })
+  export default class App extends Vue {
+    zhCn = zhCn
+
+    mounted() {
+    }
+  }
 </script>

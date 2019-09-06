@@ -1,3 +1,5 @@
+import { Vue } from 'vue/types/vue'
+
 export function createComponentInstanceForVnode(
   vnode, // we know it's MountedComponentVNode but flow doesn't
   parent, // activeInstance in lifecycle state
@@ -26,5 +28,28 @@ export function createComponentInstanceForVnode(
 }
 
 export function isAsyncComponentFunction(func) {
-  return typeof func === 'function' && typeof func.prototype === 'object';
+  return func instanceof Function && typeof func.options !== 'object'
 }
+
+export function callHook(vm: Vue, hook: string) {
+  const handlers = vm.$options[hook]
+  if (handlers) {
+    for (let i = 0, j = handlers.length; i < j; i++) {
+      try {
+        handlers[i].call(vm)
+      } catch (e) {
+        const hooks = vm.$options.errorCaptured
+        if (hooks) {
+          for (let i = 0; i < hooks.length; i++) {
+            hooks[i].call(vm, e, vm, `${hook} hook`)
+          }
+        }
+      }
+    }
+  }
+  if (vm['_hasHookEvent']) {
+    vm.$emit('hook:' + hook)
+  }
+}
+
+
