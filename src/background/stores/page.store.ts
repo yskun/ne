@@ -1,104 +1,42 @@
 import { Module } from 'vuex'
-import { IPageDirective, IPageIns, IPageOptions, IPageResult, IPageStore } from '@/background/interfaces/page.interface'
-
-export function DirectiveMap() {
-  return function(target, prop, desc) {
-    const { value } = desc
-    desc.value = async function(directive: any[]) {
-      if (Array.isArray(directive)) {
-        for (let i = 0; i < directive.length; i++) {
-          await value.call(this, directive.shift())
-        }
-      } else {
-        await value.call(this, directive)
-      }
-    }
-  }
-}
-
-export function ResultMap(receiveIdsParams?: string) {
-  return function(target, prop, desc) {
-    const { value } = desc
-    const receivedResult = []
-
-    const handleReceivedResult = (id: number) => {
-      if (receivedResult.length >= 100) {
-        receivedResult.shift()
-      }
-
-      receivedResult.push(id)
-    }
-
-    desc.value = async function(results: IPageResult[]) {
-      let targetIdsParams
-      if (receiveIdsParams && Array.isArray(this[receiveIdsParams])) {
-        targetIdsParams = this[receiveIdsParams]
-      }
-      results
-        .filter(r => {
-          const isReceived = receivedResult.includes(r.id)
-
-          if (isReceived) {
-            handleReceivedResult(r.id)
-          }
-
-          let isTarget = true
-          if (targetIdsParams) {
-            isTarget = targetIdsParams.includes(r.id)
-          }
-          return isTarget && !isReceived
-        })
-        .forEach(result => {
-          receivedResult.push(result.id)
-          value.call(this, result)
-        })
-
-    }
-  }
-}
+import { IPageIns, IPageOptions, IPageStore, PageProps } from '@/background/interfaces/page.interface'
+import { PageManager } from '@/background/manager/page-manager'
+import { ITaskOptions } from '@/background/interfaces/task.interface'
 
 export const page: Module<IPageStore, any> = {
   namespaced: true,
   state: {
-    nowDirective: [],
-    result: [],
-    directiveIndex: 0,
+    pageManager: PageManager.createManager(),
     nowPageId: '',
     mountedPageList: []
   },
   getters: {
-    nowPage(state) {
-      return state.mountedPageList.find(ins => ins.key === state.nowPageId)
+    nowPageIns(state): IPageIns {
+      return state.mountedPageList.find(ins => ins.id === state.nowPageId) || null
     }
   },
   mutations: {
-    sendDirective(state, { method, key, page }: IPageDirective) {
-      state.nowDirective.push({
-        method,
-        key: key || '',
-        page: page || '',
-        id: state.directiveIndex++
-      })
-    },
-    sendResult(state, { id, method, result }: IPageResult) {
-      if (state.result.length >= 100) {
-        state.result.shift()
-      }
+    setMountedPageList(state, { method, ins: { page, ins, id, props } }) {
 
-      state.result.push({
-        id: id || 0,
-        method,
-        result
-      })
-    },
-    setMountedPageList(state, { method, ins }: { method: 'remove' | 'add', ins: IPageIns }) {
       if (method === 'remove') {
-        const index = state.mountedPageList.findIndex(page => page.key === ins.key)
+        const index = state.mountedPageList.findIndex(page => page.id === ins.id)
         if (index !== -1) {
-          state.mountedPageList.slice(index, 1)
+          state.mountedPageList.splice(index, 1)
         }
       } else if (method === 'add') {
-        state.mountedPageList.push(ins)
+        const task: ITaskOptions = {
+          name: page.name,
+          status: 'active',
+          scrollX: 0,
+          scrollY: 0
+        }
+        state.mountedPageList = [...state.mountedPageList, {
+          page,
+          task,
+          props,
+          ins,
+          id
+        }]
       }
     },
     setNowPageId(state, id) {
@@ -106,33 +44,26 @@ export const page: Module<IPageStore, any> = {
     }
   },
   actions: {
-    mountPage({ commit, state }, { page }: { page: IPageOptions }) {
-      const id = state.directiveIndex
-      commit('sendDirective', <IPageDirective>{
-        method: 'create',
-        page
-      })
-      return id
+    async mountPage({ commit, state }, { page, props }: { page: IPageOptions, props: PageProps }) {
+      props = props || {}
+      const { result, err, ins, id } = await state.pageManager.create(page.page, props)
+      if (result === false) {
+        return { result, err }
+      }
+      commit('setMountedPageList', { method: 'add', ins: { page, ins, id, props } })
+      commit('setNowPageId', id)
+      return { result: true, id }
     },
-    switchPage({ commit, state }, { key }: { key: string }) {
-      const id = state.directiveIndex
-      commit('sendDirective', <IPageDirective>{
-        method: 'switch',
-        key
-      })
-      return id
+    switchPage({ commit, state }, { id }: { id: string }) {
+      const exist = state.mountedPageList.findIndex(v => v.id === id) !== -1
+      if (!exist) {
+        return { result: false }
+      }
+      commit('setNowPageId', id)
+      return { result: true }
     },
     closePage({ commit, state }, { key, page }: { key?: string, page?: IPageOptions }) {
-      if (key) {
-        const id = state.directiveIndex
-        commit('sendDirective', <IPageDirective>{
-          method: 'close',
-          key
-        })
-        return id
-      } else if (page) {
 
-      }
     }
   }
 }

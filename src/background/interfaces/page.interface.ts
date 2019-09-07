@@ -1,4 +1,6 @@
 import { ITaskOptions } from '@/background/interfaces/task.interface'
+import { PageManager } from '@/background/manager/page-manager'
+import { Vue } from 'vue/types/vue'
 
 export interface IPageOptions {
   type?: string
@@ -10,30 +12,21 @@ export interface IPageOptions {
   [prop: string]: any
 }
 
-export interface IPageDirective {
-  method: 'create' | 'switch' | 'createOrSwitch' | 'close' | 'closeAll' | ''
-  key?: string
-  page?: IPageOptions | ''
-  extend?: any
-  id?: number
-}
-
-export interface IPageResult {
-  id?: number
-  method?: 'create' | 'switch' | 'createOrSwitch' | 'close' | 'closeAll' | ''
-  result?: any
-}
-
 export interface IPageIns {
   page: IPageOptions
   task: ITaskOptions
-  key: string
+  props: PageProps
+  ins: Vue
+  id: string
+}
+
+export interface PageProps {
+  data?: object
+  on?: object
 }
 
 export interface IPageStore {
-  nowDirective: IPageDirective[]
-  result?: IPageResult[]
-  directiveIndex: number
+  pageManager: PageManager
   nowPageId: string
   mountedPageList: IPageIns[]
 }

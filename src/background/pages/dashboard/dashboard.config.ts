@@ -1,6 +1,6 @@
 import { IPageOptions } from '@/background/interfaces/page.interface'
 
-export const dashboard:IPageOptions = {
+export const dashboard: IPageOptions = {
   type: 'dashboard',
   icon: 'dashboard',
   name: '控制台',
