@@ -6,7 +6,6 @@ export const dashboard: IPageOptions = {
   name: '控制台',
   page: () => import('./dashboard.page.vue'),
   // noToTop: true,
-  multiplePage: false,
   closeable: false,
   // noTab: true,
   defaultPage: true

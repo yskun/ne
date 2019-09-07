@@ -1,6 +1,6 @@
 <template>
   <div @click="click">
-    这是控制台w {{test}} {{cc}}
+    这是控制台w {{test}} {{cc}}2333
     <ul>
       <li v-for="l in list">{{l}}</li>
     </ul>
@@ -9,7 +9,7 @@
 
 <script lang="ts">
 
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Component, Vue } from 'vue-property-decorator'
 
   @Component({
     props: { test: Number, cc: Object }

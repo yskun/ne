@@ -16,7 +16,7 @@ export interface IPageIns {
   page: IPageOptions
   task: ITaskOptions
   props: PageProps
-  ins: Vue
+  ins?: Vue
   id: string
 }
 

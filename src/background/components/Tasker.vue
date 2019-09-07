@@ -9,23 +9,18 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
   import Task from '@/background/components/Task.vue'
-  import { mapState } from 'vuex'
-  import { IPageIns } from '@/background/interfaces/page.interface'
+  import { mapGetters } from 'vuex'
 
   @Component({
     name: 'Tasker',
     components: { Task },
     computed: {
-      ...mapState('page', [
-        'mountedPageList'
+      ...mapGetters('page', [
+        'taskList'
       ])
     }
   })
   export default class Tasker extends Vue {
-    get taskList() {
-      return (<IPageIns[]>this['mountedPageList'])
-        .filter(page => page.page.noTask !== true)
-    }
   }
 </script>
 

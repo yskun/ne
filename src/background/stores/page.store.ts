@@ -13,11 +13,13 @@ export const page: Module<IPageStore, any> = {
   getters: {
     nowPageIns(state): IPageIns {
       return state.mountedPageList.find(ins => ins.id === state.nowPageId) || null
+    },
+    taskList(state): IPageIns[] {
+      return state.mountedPageList.filter(page => page.page.showInTaskBar !== false)
     }
   },
   mutations: {
-    setMountedPageList(state, { method, ins: { page, ins, id, props } }) {
-
+    setMountedPageList(state, { method, ins: { page, ins, id, props, parentId } }) {
       if (method === 'remove') {
         const index = state.mountedPageList.findIndex(page => page.id === ins.id)
         if (index !== -1) {
@@ -26,7 +28,7 @@ export const page: Module<IPageStore, any> = {
       } else if (method === 'add') {
         const task: ITaskOptions = {
           name: page.name,
-          status: 'active',
+          parentId: parentId || null,
           scrollX: 0,
           scrollY: 0
         }
@@ -44,7 +46,7 @@ export const page: Module<IPageStore, any> = {
     }
   },
   actions: {
-    async mountPage({ commit, state }, { page, props }: { page: IPageOptions, props: PageProps }) {
+    async mountPage({ commit, state }, { page, props, parentId }: { page: IPageOptions, props: PageProps, parentId?: string }) {
       props = props || {}
       const { result, err, ins, id } = await state.pageManager.create(page.page, props)
       if (result === false) {
@@ -62,8 +64,27 @@ export const page: Module<IPageStore, any> = {
       commit('setNowPageId', id)
       return { result: true }
     },
-    closePage({ commit, state }, { key, page }: { key?: string, page?: IPageOptions }) {
+    closePage({ commit, state }, { id }: { id: string }) {
+      if (state.nowPageId === id) {
+        const pageIns = state.mountedPageList.find(v => v.id === id)
+        if (pageIns) {
+          let parentId = pageIns.task.parentId
+          if (!parentId && state.mountedPageList[0].id) {
 
+          }
+        }
+      }
+    },
+    async startPage({ commit, state, dispatch }, { page, props, parentId }: { page: IPageOptions, props: PageProps, parentId?: string }) {
+      const multiplePage = page.multiplePage !== false
+      if (!multiplePage) {
+        const pageIns = state.mountedPageList.find(pageIns => pageIns.page.type === page.type)
+        if (pageIns) {
+          return dispatch('switchPage', { id: pageIns.id })
+        }
+      }
+
+      return dispatch('mountPage', { page, props, parentId })
     }
   }
 }

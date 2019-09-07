@@ -1,8 +1,8 @@
 <template>
-  <div :class="task.task.status" @click="switchPage({ key: task.key })" class="task">
+  <div :class="getTaskClass" @click="switchPage({ id: task.id })" class="task">
     <span>{{ task.task.name }}</span>
     <a-icon
-      @click.stop="closePage({ id: task.key })"
+      @click.stop="closePage({ id: task.id })"
       class="close-btn"
       type="cross"
       v-if="task.page.closeable !== false"/>
@@ -12,10 +12,15 @@
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator'
   import { IPageIns } from '@/background/interfaces/page.interface'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapState } from 'vuex'
 
   @Component({
     name: 'Task',
+    computed: {
+      ...mapState('page', [
+        'nowPageId'
+      ])
+    },
     methods: {
       ...mapActions('page', [
         'switchPage',
@@ -26,6 +31,10 @@
   export default class Task extends Vue {
     @Prop()
     task: IPageIns
+
+    get getTaskClass(): string {
+      return this.task.id === this['nowPageId'] ? 'active' : 'inactive'
+    }
 
   }
 </script>

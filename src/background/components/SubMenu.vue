@@ -26,7 +26,3 @@
     menu: IMenu
   }
 </script>
-
-<style scoped>
-
-</style>

@@ -51,8 +51,7 @@ export class PageManager {
                { data, on }: { data?: object, on?: object } = { data: {}, on: {} }): Promise<PageCreateResult> {
     try {
       console.log(on)
-      const { ins, name } = await this.initComponent(pageComponent, data, on)
-      const id = `${name}-${uuid()}`
+      const { ins, id } = await this.initComponent(pageComponent, data, on)
       ins['$$pageId'] = id
       this.pageStore[id] = ins
       return { result: true, id, ins }
@@ -128,13 +127,16 @@ export class PageManager {
     return { result: true }
   }
 
-  private async initComponent(pageComponent: any, data: any, on: any): Promise<{ name: string, ins: Vue }> {
+  private async initComponent(pageComponent: any, data: any, on: any): Promise<{ name: string, id: string, ins: Vue }> {
     if (isAsyncComponentFunction(pageComponent)) {
-      pageComponent = await pageComponent()
+      pageComponent = (await pageComponent()).default
     }
+    const id = `${pageComponent.name}-${uuid()}`
 
     return {
-      name: pageComponent.name || '$$NoName', ins: new Vue({
+      name: pageComponent.name || '$$NoName',
+      id,
+      ins: new Vue({
         store: Store,
         data: function() {
           return {
@@ -147,7 +149,7 @@ export class PageManager {
         },
         render() {
           return (<keep-alive>
-            <page {...this.$data}/>
+            <page {...this.$data} key={id}/>
           </keep-alive>)
         }
       })
@@ -159,13 +161,6 @@ export class PageManager {
       const pageIns = this.getPage(page)
       if (pageIns instanceof Error) {
         return { result: false, err: pageIns }
-      }
-
-      if (this.onLoadComponent && this.onLoadComponent['$$pageId'] === pageIns['$$pageId']) {
-        const hideResult = this.hide()
-        if (!hideResult.result) {
-          return hideResult
-        }
       }
 
       const pageId = pageIns['$$pageId']

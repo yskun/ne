@@ -20,7 +20,7 @@
   import SubMenu from './SubMenu.vue'
   import { menu } from '@/background/stores/menu.store'
   import { IMenu } from '@/background/interfaces/menu.interface'
-  import { IPageIns, IPageOptions } from '@/background/interfaces/page.interface'
+  import { IPageIns } from '@/background/interfaces/page.interface'
 
   @Component({
     name: 'SidebarMenu',
@@ -41,67 +41,50 @@
     },
     methods: {
       ...mapActions('page', [
-        'switchPage',
-        'mountPage'
+        'startPage'
       ])
     }
   })
   export default class SidebarMenu extends Vue {
     selectKeys: string[] = []
-    shortcuts: IMenu[] = []
     nowKey: string = ''
 
-    @Watch('nowPage')
+    get shortcuts(): IMenu[] {
+      return this.getAllShortcuts(this['menuList'])
+    }
+
+    getAllShortcuts(menuList: IMenu[]): IMenu[] {
+      return menuList.reduce((shortcuts, now) => {
+        if (!now.children) {
+          shortcuts.push(now)
+        } else {
+          shortcuts.push(
+            ...this.getAllShortcuts(now.children)
+          )
+        }
+        return shortcuts
+      }, [])
+    }
+
+    @Watch('nowPageIns')
     nowPageWatcher({ page }: IPageIns) {
       this.selectKeys = this.shortcuts
         .filter(s => s.page.type === page.type)
         .map(s => s.id)
     }
 
-    @Watch('menuList', { immediate: true })
-    menuListWatcher(menuList: IMenu[]) {
-      this.shortcuts = []
-      this.getAllShortcuts(menuList)
-    }
-
-    getAllShortcuts(menuList: IMenu[]) {
-      menuList.forEach(m => {
-        if (!m.children) {
-          this.shortcuts.push(m)
-        } else {
-          this.getAllShortcuts(m.children)
-        }
-      })
-    }
-
     selectMenu({ key }: { key: string }) {
-      const shortcut = this.getShortcut(key)
+      const shortcut = this.shortcuts.find(shortcut => shortcut.id === key)
       if (this.nowKey === key && shortcut.page.multiplePage === false) {
         return
       }
       this.nowKey = key
       if (shortcut) {
-        this['switchOrMountPage']({ page: shortcut.page })
+        this['startPage']({ page: shortcut.page })
       } else {
         throw new Error(`no shortcut find! key: ${key}`)
       }
     }
-
-    switchOrMountPage({ page }: { page: IPageOptions }) {
-      if (page.multiplePage === false) {
-        const result = this['mountedPageList'].find(p => p.page.type === page.type)
-        if (result) {
-          return this['switchPage']({ key: result.key })
-        }
-      }
-      return this['mountPage']({ page })
-    }
-
-
-    getShortcut(id: string) {
-      return this.shortcuts.find(shortcut => shortcut.id === id)
-    }
-
   }
 
 </script>

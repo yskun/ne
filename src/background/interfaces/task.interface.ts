@@ -1,6 +1,6 @@
 export interface ITaskOptions {
   name: string
-  status: 'active' | 'inactive'
+  parentId: string
   scrollX: number
   scrollY: number
 }
