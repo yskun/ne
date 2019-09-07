@@ -6,15 +6,11 @@
 
 <script lang="ts">
   import { IPage } from '@/background/interfaces/page-component.interface'
-  import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
   import Page from '@/background/components/Page.vue'
-  import { Component, Vue, Watch } from 'vue-property-decorator'
-  import { IPageDirective, IPageIns, IPageOptions, IPageResult } from '@/background/interfaces/page.interface'
+  import { Component, Vue } from 'vue-property-decorator'
+  import { mapGetters } from 'vuex'
+  import { IPageIns } from '@/background/interfaces/page.interface'
 
-  import { dashboard } from '@/background/pages/dashboard/dashboard.config'
-  import { DirectiveMap, ResultMap } from '@/background/stores/page.store'
-  import { ITaskOptions } from '@/background/interfaces/task.interface'
-  import PageNew from '@/background/components/PageNew.vue'
 
   @Component({
     name: 'Container',
@@ -22,161 +18,24 @@
       Page
     },
     computed: {
-      ...mapState('page', [
-        'result',
-        'directive',
-        'mountedPageList',
-        'nowDirective'
-      ]),
-      ...mapGetters('page', [
-        'nowPage'
-      ])
-    },
-    methods: {
-      ...mapMutations('page', [
-        'sendDirective',
-        'sendResult',
-        'setMountedPageList',
-        'setNowPageId'
-      ]),
-      ...mapActions('page', [
-        'mountPage',
-        'switchPage'
-      ])
+      ...mapGetters('page', ['nowPageIns'])
     }
   })
   export default class Container extends Vue {
 
-    component = dashboard.page
-
     container: Element
-    singleInstance: { page: any, key: string }[] = []
-    nowInstanceList: { ins: any, option: IPageIns }[] = []
 
     get pageComponent(): IPage {
       return <any>this.$refs.page
     }
 
-    @Watch('nowDirective')
-    @DirectiveMap()
-    directiveWatcher(directive: IPageDirective) {
-      if (directive.method === '') {
+    viewWatcher() {
+      if (!this['nowPageIns']) {
         return
       }
-
-      if (!this[directive.method]) {
-        throw new Error(`no '${directive.method}' method on container`)
-      }
-
-      this[directive.method](directive)
-    }
-
-    @Watch('result')
-    @ResultMap()
-    resultWatcher(result) {
-      console.log(`container: resultWatcher ->`, result)
-    }
-
-    async create(directive: IPageDirective) {
-      if (!directive.page) {
-        throw new Error('create method need page option')
-      }
-
-      const pageOption: IPageOptions = directive.page
-
-      // 如果不允许多例则终结创建过程
-      if (pageOption.multiplePage === false) {
-        const result = this.singleInstance.findIndex(instance => instance.page === (<IPageOptions>directive.page).page)
-        if (result > -1) {
-          return
-        }
-      }
-
-      const key = await this.pageComponent.create(pageOption.page)
-      if (key) {
-        const ins = this.pageComponent.getInstance(key)
-        const taskOption: ITaskOptions = {
-          name: pageOption.name,
-          status: 'active',
-          scrollX: 0,
-          scrollY: 0
-        }
-
-        const option: IPageIns = {
-          page: pageOption,
-          task: taskOption,
-          key
-        }
-        this.nowInstanceList.push({ ins, option })
-        this['setMountedPageList']({
-          method: 'add',
-          ins: option
-        })
-        if (pageOption.multiplePage === false) {
-          this.singleInstance.push({ page: pageOption.page, key })
-        }
-      }
-
-      if (this['nowPage']) {
-        this['nowPage'].task.status = 'inactive'
-      }
-
-      this['setNowPageId'](key)
-
-      this['nowPage'].task.status = 'active'
-
-      this['sendResult']({
-        id: directive.id,
-        method: directive.method,
-        result: key
-      })
-    }
-
-    switch(directive: IPageDirective) {
-      if (!directive.key) {
-        throw new Error('create method need key option')
-      }
-
-      const { id, method, key } = directive
-
-      if (this['nowPage']) {
-        this['nowPage'].task.status = 'inactive'
-      }
-
-      JSON.stringify(this['nowPage'])
-
-      const result = this.pageComponent.switchPage(key)
-
-      this['setNowPageId'](key)
-
-      if (result) {
-        JSON.stringify(this['nowPage'])
-        this['nowPage'].task.status = 'active'
-      } else {
-        this['nowPage'].task.status = 'inactive'
-      }
-
-      this['sendResult'](<IPageResult>{
-        id,
-        method,
-        result
-      })
-    }
-
-    close(directive: IPageDirective) {
-      if (!directive.key) {
-        throw new Error('create method need key option')
-      }
-
-      const { id, method, key } = directive
-
-    }
-
-    resulta(e) {
-      console.log(e)
-    }
-
-    viewWatcher() {
+      const ins: IPageIns = this['nowPageIns']
+      ins.task.scrollY = this.container.scrollTop
+      ins.task.scrollX = this.container.scrollLeft
       // this.pageOptions.viewTopScroll = this.container.scrollTop
     }
 
@@ -190,18 +49,6 @@
     }
 
     async mounted() {
-      //
-      // window['switchPage'] = (key: string) => {
-      //   console.log(this)
-      //   this['switchPage']({
-      //     key
-      //   })
-      // }
-      //
-      // this['mountPage']({
-      //   page: dashboard
-      // })
-
       this.bindViewScrollWatcher()
     }
 

@@ -47,28 +47,18 @@ export class PageManager {
     return page
   }
 
-  private async initComponent(pageComponent: any, data: any, on: any): Promise<Vue> {
-    if (isAsyncComponentFunction(pageComponent)) {
-      pageComponent = await pageComponent()
+  async create(pageComponent: any,
+               { data, on }: { data?: object, on?: object } = { data: {}, on: {} }): Promise<PageCreateResult> {
+    try {
+      console.log(on)
+      const { ins, name } = await this.initComponent(pageComponent, data, on)
+      const id = `${name}-${uuid()}`
+      ins['$$pageId'] = id
+      this.pageStore[id] = ins
+      return { result: true, id, ins }
+    } catch (err) {
+      return { result: false, err }
     }
-
-    return new Vue({
-      store: Store,
-      data: function() {
-        return {
-          props: data || {},
-          on: on || {}
-        }
-      },
-      components: {
-        page: pageComponent
-      },
-      render() {
-        return (<keep-alive>
-          <page {...this.$data}/>
-        </keep-alive>)
-      }
-    })
   }
 
   getPageById(id: string): PageCreateResult {
@@ -138,18 +128,29 @@ export class PageManager {
     return { result: true }
   }
 
+  private async initComponent(pageComponent: any, data: any, on: any): Promise<{ name: string, ins: Vue }> {
+    if (isAsyncComponentFunction(pageComponent)) {
+      pageComponent = await pageComponent()
+    }
 
-  async create(pageComponent: any,
-               { data, on }: { data?: object, on?: object } = { data: {}, on: {} }): Promise<PageCreateResult> {
-    try {
-      console.log(on)
-      const ins: Vue = await this.initComponent(pageComponent, data, on)
-      const id = `${ins.$options.name || '$$NoName'}-${uuid()}`
-      ins['$$pageId'] = id
-      this.pageStore[id] = ins
-      return { result: true, id, ins }
-    } catch (err) {
-      return { result: false, err }
+    return {
+      name: pageComponent.name || '$$NoName', ins: new Vue({
+        store: Store,
+        data: function() {
+          return {
+            props: data || {},
+            on: on || {}
+          }
+        },
+        components: {
+          page: pageComponent
+        },
+        render() {
+          return (<keep-alive>
+            <page {...this.$data}/>
+          </keep-alive>)
+        }
+      })
     }
   }
 

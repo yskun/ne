@@ -1,11 +1,10 @@
 import { IPageOptions } from '@/background/interfaces/page.interface'
-const da = () => import('./dashboard.page.vue')
 
-export const dashboard:IPageOptions = {
+export const dashboard: IPageOptions = {
   type: 'dashboard',
   icon: 'dashboard',
   name: '控制台',
-  page: da,
+  page: () => import('./dashboard.page.vue'),
   // noToTop: true,
   multiplePage: false,
   closeable: false,
